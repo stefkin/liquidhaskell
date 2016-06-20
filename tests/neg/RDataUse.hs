@@ -1,3 +1,3 @@
 import RData 
 
-bar = F (-1)
+bar = F {ff = -10}

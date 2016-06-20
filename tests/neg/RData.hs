@@ -1,8 +1,8 @@
 module RData where
 
 
-data Foo = F Int 
+data Foo = F {ff::Int} 
 {-@ data Foo = F Nat @-}
 
 
-foo = F (-1)
+foo = F {ff = -1}
