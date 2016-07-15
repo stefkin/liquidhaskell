@@ -84,7 +84,7 @@ import GHC              hiding (Located)
 import DataCon
 import qualified TyCon  as TC
 import TypeRep          hiding (maybeParen, pprArrowChain)
-import Type             (splitFunTys, expandTypeSynonyms, substTyWith) -- , isClassPred)
+import Type             (splitFunTys, expandTypeSynonyms, substTyWith, isClassPred)
 import TysWiredIn       (listTyCon, intDataCon, trueDataCon, falseDataCon,
                          intTyCon, charTyCon, typeNatKind, typeSymbolKind, stringTy, intTy)
 
@@ -1262,7 +1262,7 @@ typeSortFun tce t -- τ1 τ2
 
 grabArgs :: [Type] -> Type -> [Type]
 grabArgs τs (FunTy τ1 τ2)
-  | True {- not $ isClassPred τ1 -} = grabArgs (τ1:τs) τ2
+  | not $ isClassPred τ1 = grabArgs (τ1:τs) τ2
   | otherwise            = grabArgs τs τ2
 grabArgs τs τ            = reverse (τ:τs)
 

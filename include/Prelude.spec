@@ -46,3 +46,5 @@ predicate Max V X Y = if X > Y then V = X else V = Y
 predicate Min V X Y = if X < Y then V = X else V = Y
 
 type IncrListD a D = [a]<{\x y -> (x+D) <= y}>
+
+measure stringLen :: String -> Int 

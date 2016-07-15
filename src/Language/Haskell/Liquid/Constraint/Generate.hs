@@ -1228,7 +1228,10 @@ makeSingleton :: CGEnv -> CoreExpr -> SpecType -> SpecType
 makeSingleton γ e t
   | higherOrderFlag γ, App f x <- simplify e
   = case (funExpr γ f, argExpr γ x) of
-      (Just f', Just x') -> strengthenMeet t (uTop $ F.exprReft (F.EApp f' x'))
+      (Just f', _) | isClassPred (exprType x) 
+        -> strengthenMeet t (uTop $ F.exprReft f')
+      (Just f', Just x') 
+        -> strengthenMeet t (uTop $ F.exprReft (F.EApp f' x'))
       _ -> t
   | otherwise
   = t
@@ -1236,6 +1239,8 @@ makeSingleton γ e t
 funExpr :: CGEnv -> CoreExpr -> Maybe F.Expr
 funExpr γ (Var v) | M.member v $ aenv γ
   = F.EVar <$> (M.lookup v $ aenv γ)
+funExpr γ (App e1 e2) | isClassPred (exprType e2)
+  = funExpr γ e1 
 funExpr γ (App e1 e2)
   = case (funExpr γ e1, argExpr γ e2) of
       (Just e1', Just e2') -> Just (F.EApp e1' e2')
