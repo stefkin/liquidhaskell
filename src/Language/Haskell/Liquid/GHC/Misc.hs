@@ -17,7 +17,7 @@ module Language.Haskell.Liquid.GHC.Misc where
 
 import           Class                                      (classKey)
 import           Data.String
-import           PrelNames                                  (fractionalClassKeys)
+import           PrelNames                                  (fractionalClassKeys, isStringClassKey)
 
 import           Debug.Trace
 
@@ -183,6 +183,9 @@ unTickExpr x                  = x
 
 isFractionalClass :: Class -> Bool
 isFractionalClass clas = classKey clas `elem` fractionalClassKeys
+
+isStringClass :: Class -> Bool
+isStringClass clas = classKey clas == isStringClassKey
 
 
 --------------------------------------------------------------------------------

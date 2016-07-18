@@ -856,11 +856,13 @@ class (Eq c) => TyConable c where
 
   isNumCls  :: c -> Bool
   isFracCls :: c -> Bool
+  isStrCls  :: c -> Bool
 
   isClass   = const False
   isEqual   = const False
   isNumCls  = const False
   isFracCls = const False
+  isStrCls  = const False 
 
 
 -- Should just make this a @Pretty@ instance but its too damn tedious
@@ -889,6 +891,8 @@ instance TyConable RTyCon where
                 (tyConClass_maybe $ rtc_tc c)
   isFracCls c = maybe False (isClassOrSubClass isFractionalClass)
                 (tyConClass_maybe $ rtc_tc c)
+  isStrCls c  = maybe False (isClassOrSubClass isStringClass)
+                (tyConClass_maybe $ rtc_tc c)
 
 
 instance TyConable TyCon where
@@ -902,6 +906,8 @@ instance TyConable TyCon where
   isNumCls c  = maybe False (isClassOrSubClass isNumericClass)
                 (tyConClass_maybe $ c)
   isFracCls c = maybe False (isClassOrSubClass isFractionalClass)
+                (tyConClass_maybe $ c)
+  isStrCls c = maybe False (isClassOrSubClass isStringClass)
                 (tyConClass_maybe $ c)
 
 

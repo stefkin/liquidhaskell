@@ -1298,6 +1298,8 @@ classBinds (RApp c ts _ _)
    = [(rTyVarSymbol a, trueSortedReft FFrac) | (RVar a _) <- ts]
    | isNumCls c
    = [(rTyVarSymbol a, trueSortedReft FNum) | (RVar a _) <- ts]
+   | isStrCls c 
+   = [(rTyVarSymbol a, trueSortedReft FStr) | (RVar a _) <- ts]
 classBinds _
   = []
 

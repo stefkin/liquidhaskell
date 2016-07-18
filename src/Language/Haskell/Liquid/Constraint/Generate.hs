@@ -1050,13 +1050,15 @@ caseEnv γ x _   (DataAlt c) ys pIs
        tdc              <- γ ??= ({- F.symbol -} dataConWorkId c) >>= refreshVV
        let (rtd,yts', _) = unfoldR tdc xt ys
        yts              <- projectTypes pIs yts'
-       let r1            = dataConReft   c   ys'
-       let r2            = dataConMsReft rtd ys'
+       let r1            = dataConReft   c   ys''
+       let r2            = dataConMsReft rtd ys''
        let xt            = (xt0 `F.meet` rtd) `strengthen` (uTop (r1 `F.meet` r2))
        let cbs           = safeZip "cconsCase" (x':ys') (xt0 : yts)
        cγ'              <- addBinders γ   x' cbs
        cγ               <- addBinders cγ' x' [(x', xt)]
        return $ addArguments cγ ys
+  where
+    ys'' = [F.symbol y | y <- ys, not (isClassPred $ varType y)]
 
 caseEnv γ x acs a _ _
   = do let x'  = F.symbol x
@@ -1176,6 +1178,8 @@ lamExpr γ (Var v)     | S.member v (fargs γ)
                       =  Just $ F.eVar v
 lamExpr γ (Lit c)     = snd  $ literalConst (emb γ) c
 lamExpr γ (Tick _ e)  = lamExpr γ e
+lamExpr γ (App e1 e2) | isClassPred (exprType e2)
+  = lamExpr γ e1 
 lamExpr γ (App e (Type _)) = lamExpr γ e
 lamExpr γ (App e1 e2) = case (lamExpr γ e1, lamExpr γ e2) of
                               (Just p1, Just p2) -> Just $ F.EApp p1 p2

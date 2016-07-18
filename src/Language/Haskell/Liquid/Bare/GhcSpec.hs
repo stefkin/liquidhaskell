@@ -182,12 +182,14 @@ makeExact x = (x, dummyLoc . fromRTypeRep $ trep{ty_res = res, ty_binds = xs})
     trep = toRTypeRep t
     xs   = zipWith (\_ i -> (symbol ("x" ++ show i))) (ty_args trep) [1..]
 
+    xs'  = fst <$> dropWhile (isClassType . snd) (zip xs  (ty_args trep)) 
+
     res  = ty_res trep `strengthen` MkUReft ref mempty mempty
     vv   = vv_
     x'   = symbol x --  simpleSymbolVar x
     ref  = Reft (vv, PAtom Eq (EVar vv) eq)
     eq   | null (ty_vars trep) && null xs = EVar x'
-         | otherwise = mkEApp (dummyLoc x') (EVar <$> xs)
+         | otherwise = mkEApp (dummyLoc x') (EVar <$> xs')
 
 
 makeGhcAxioms :: TCEmb TyCon -> [CoreBind] -> ModName -> [(ModName, Ms.BareSpec)] -> GhcSpec -> BareM GhcSpec
